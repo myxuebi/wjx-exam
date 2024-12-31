@@ -41,7 +41,7 @@ time.sleep(2)
 def ollama(text):
     url = "http://localhost:11434/api/generate"
     data = {
-        "model": "gemma2:27b",
+        "model": "qwen2",
         "prompt": f"这是题目：{text} 直接返回给我答案的对应选项 不要描述其他的",
         "stream": False
     }
@@ -69,6 +69,8 @@ def read_que():
         que = i.find_element(By.XPATH,".//div[@class='topichtml']")
         # print(que.text)
         chose = i.find_elements(By.XPATH,".//div[@class='ui-controlgroup column1']")
+        for element in chose:
+            source = element.get_attribute("outerHTML")
         choose_info = ""
         for c in chose:
             # print(c.text)
@@ -82,6 +84,8 @@ def read_que():
             elif "【多选题】" in que.text:
                 label = "多选题"
             elif "A" in choose_info:
+                label = "单选题"
+            elif """<span class="jqradiowrapper">""" in source:
                 label = "单选题"
             else:
                 print("未知题型")
@@ -130,6 +134,41 @@ def read_que():
 
                 if 'A' not in ans and 'B' not in ans and '对' not in ans and '错' not in ans:
                     print("答案获取失败")
+
+    next_page()
+
+def next_page():
+    try:
+        next_btn = browser.find_element(By.XPATH, "//a[text()='下一页']")
+        next_btn.click()
+        read_que()
+        return
+    except:
+        pass
+
+    try:
+        next_btn = browser.find_element(By.XPATH, "//a[text()='下一题']")
+        next_btn.click()
+        read_que()
+        return
+    except:
+        pass
+
+    try:
+        next_btn = browser.find_element(By.XPATH, "//span[text()='开始答题']")
+        next_btn.click()
+        read_que()
+        return
+    except:
+        pass
+
+    try:
+        next_btn = browser.find_element(By.XPATH, "//a[text()='继续']")
+        next_btn.click()
+        read_que()
+        return
+    except:
+        pass
 
 read_que()
 print("答题已完成，请手动填写不支持的题目类型")
