@@ -124,16 +124,40 @@ def read_que():
                 else:
                     ans = ollama(label + que_all)
                 print("AI参考答案:" + ans)
-                if '对' in ans or 'A' in ans:
+
+                tf = i.find_element(By.XPATH, ".//div[@class='ui-controlgroup column1']/div[1]/div").text
+                if "对" in tf:
+                    if '对' in ans:
+                        A = i.find_element(By.XPATH, ".//div[@class='ui-controlgroup column1']/div[1]/span/a")
+                        A.click()
+
+                    if '错' in ans:
+                        B = i.find_element(By.XPATH, ".//div[@class='ui-controlgroup column1']/div[2]/span/a")
+                        B.click()
+
+                    if 'A' not in ans and 'B' not in ans and '对' not in ans and '错' not in ans:
+                        print("答案获取失败")
+                elif "错" in tf:
+                    if '对' in ans:
+                        A = i.find_element(By.XPATH, ".//div[@class='ui-controlgroup column1']/div[2]/span/a")
+                        A.click()
+
+                    if '错' in ans:
+                        B = i.find_element(By.XPATH, ".//div[@class='ui-controlgroup column1']/div[1]/span/a")
+                        B.click()
+
+                    if 'A' not in ans and 'B' not in ans and '对' not in ans and '错' not in ans:
+                        print("答案获取失败")
+                else:
+                    print("选项获取失败")
+
+                if 'A' in ans:
                     A = i.find_element(By.XPATH, ".//div[@class='ui-controlgroup column1']/div[1]/span/a")
                     A.click()
 
-                if '错' in ans or 'B' in ans:
+                if 'B' in ans:
                     B = i.find_element(By.XPATH, ".//div[@class='ui-controlgroup column1']/div[2]/span/a")
                     B.click()
-
-                if 'A' not in ans and 'B' not in ans and '对' not in ans and '错' not in ans:
-                    print("答案获取失败")
 
     next_page()
 
